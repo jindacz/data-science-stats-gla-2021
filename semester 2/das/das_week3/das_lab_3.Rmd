@@ -1,0 +1,177 @@
+---
+title: "Week3DA"
+author: "LouisY"
+output:
+  pdf_document:
+          latex_engine: pdflatex
+          number_sections: yes
+fig_caption: yes
+---
+
+```{r loadpackages, echo=FALSE, eval=TRUE, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(dplyr)
+library(moderndive)
+library(gapminder)
+library(skimr)
+library(mvtnorm)
+library(gridExtra)
+library(kableExtra)
+library(tidyr)
+```
+```{r evals, echo = T, eval = TRUE, warning = FALSE}
+  
+```
+
+
+
+
+# Introduction {#sec:intro}
+
+## Sub1 {#sec:sub1}
+
+
+Table \ref{tab:iris} displays the first 5 rows of the iris data...
+
+## Sub2 {#sec:sub2}
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r summaries,echo = T}
+iris %>%
+  group_by(Species) %>%
+  summarise(n=n(),Mean=round(mean(Sepal.Width),digits=1), 
+    St.Dev=round(sd(Sepal.Width),digits=1), Min=min(Sepal.Width), 
+    Q1 = quantile(Sepal.Width,0.25), Median=median(Sepal.Width), 
+    Q3 = quantile(Sepal.Width,0.75), Max=max(Sepal.Width)) %>%
+  kable(caption = '\\label{tab:summaries} Summary statistics on the sepal 
+    width by species of irises.') %>%
+  kable_styling(font_size = 10, latex_options = "hold_position")
+```
+`summarise()` ungrouping output (override with `.groups` argument)
+
+```{r, summaries_skim,echo = T}
+my_skim <- skim_with(base = sfl(n = length))
+iris %>%
+  group_by(Species) %>%
+  select(Sepal.Length,Species) %>%
+  my_skim() %>%
+  transmute(Variable=skim_variable, Species=Species, n=n, Mean=numeric.mean, SD=numeric.sd,
+            Min=numeric.p0, Median=numeric.p50,  Max=numeric.p100, 
+            IQR = numeric.p75-numeric.p50) %>%
+   kable(caption = '\\label{tab:summaryskim} Summary statistics of the sepal length by species of irises (produced using skim() function).',
+         booktabs = TRUE, linesep = "", digits = 2) %>%
+   kable_styling(font_size = 10, latex_options = "hold_position")
+```
+
+Contingency Tables
+Often we need to report summary statistics for different combinations of categorical variables’ values. For instance, we can classify each iris as having a large or small sepal length and then construct a contingency table of of the counts or large and small sepal lengths by the different species in the iris data using:
+```{r, message=FALSE, warning=FALSE}
+iris %>%
+  mutate(sepal.length.class = if_else(Sepal.Length<5.5,'small','large')) %>%
+  group_by(Species, sepal.length.class) %>%
+  summarise(n=n()) %>%
+  spread(sepal.length.class, n) %>%
+  kable() %>%
+  kable_styling(font_size = 10, latex_options = "hold_position")
+```
+We achieve this by including the spread() function, to create columns for each sepal length class, with the count n as the crosstab response value.
+One advantage of dplyr is that we can determine what kind of summary statistic we want to see very easily by adjusting our summarize() input.
+Here instead of displaying frequencies, we can get the average petal length by species & sepal length class:
+
+```{r, message=FALSE, warning=FALSE}
+iris %>%
+  mutate(sepal.length.class = if_else(Sepal.Length<5.5,'small','large')) %>%
+  group_by(Species, sepal.length.class) %>%
+  summarise(mean_petal.length=mean(Petal.Length))%>%
+  spread(sepal.length.class, mean_petal.length)%>%
+  kable(digits = 2) %>%
+  kable_styling(font_size = 10, latex_options = "hold_position")
+```
+Lastly, we can find proportions by creating a new, calculated variable dividing row frequency by table frequency.
+```{r, message=FALSE, warning=FALSE}
+iris %>%
+  mutate(sepal.length.class = if_else(Sepal.Length<5.5,'small','large')) %>%
+  group_by(Species, sepal.length.class) %>%
+  summarize(n=n())%>%
+  mutate(prop=n/sum(n))%>%   # our new proportion variable
+  kable(digits = 2) %>%
+  kable_styling(font_size = 10, latex_options = "hold_position")
+```
+And we can create a contingency table of proportion values by applying the same spread command as before. Vary the group_by() and spread() arguments to produce proportions of different variables.
+```{r, message=FALSE, warning=FALSE}
+iris %>%
+  mutate(sepal.length.class = if_else(Sepal.Length<5.5,'small','large')) %>%
+  group_by(Species, sepal.length.class) %>%
+  summarize(n=n())%>%
+  mutate(prop=n/sum(n))%>%   # our new proportion variable
+  subset(select=c("Species","sepal.length.class","prop"))%>%   #drop the frequency value
+  spread(sepal.length.class, prop)%>%
+  kable(digits = 2) %>%
+  kable_styling(font_size = 10, latex_options = "hold_position")
+```
+
+
+
+
+Tables of model estimates
+Often we also need to report the results of fitting a model to our data. For instance if we modeled the sepal length on the different species in the iris data by:
+```{r fittedmodel}
+model <- lm(Sepal.Length ~ Species, data = iris)
+get_regression_table(model) %>%
+  dplyr::select(term,estimate) %>%  
+  #Note that it seems necessary to include "dplyr::" here!!
+  kable(caption = '\\label{tab:reg} Estimates of the parameters from the fitted linear regression model.') %>%
+  kable_styling(latex_options = 'HOLD_position')
+
+```
+
+Tables ‘by hand’
+Tables can also be produced “by hand”" in Markdown. For example, the table above corresponding to the first 5 rows of the iris data can be produced by hand by typing the following text (without any other text) into a .Rmd file:
+
+Sepal Length   | Sepal Width   | Petal Length   | Petal Width   | Species
+:-------------:|:-------------:|:--------------:|:-------------:|---------:
+ 5.1           | 3.5           | 1.4            | 0.2           | setosa
+ 4.9           | 3.0           | 1.4            | 0.2           | setosa
+ 4.7           | 3.2           | 1.3            | 0.2           | setosa
+ 4.6           | 3.1           | 1.5            | 0.2           | setosa
+ 5.0           | 3.6           | 1.4            | 0.2           | setosa
+
+Table: The fist 5 rows of the iris data.
+
+```{r, eval = TRUE, out.width = '80%', fig.align = "center", fig.cap = "\\label{fig:scat} Relationship between teaching and beauty scores. The best-fitting line has been superimposed.", fig.pos = "H"}
+ggplot(evals.scores, aes(x = bty_avg, y = score)) +
+  geom_point() +
+  labs(x = "Beauty Score", y = "Teaching Score") +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+`geom_smooth()` using formula 'y ~ x'
+
+$$y_i = \alpha + \beta x_i + \epsilon_i, ~~~~ \epsilon_i \sim N(0, \sigma^2),$$
+Further Tasks
+The following task is here to help you prepare for the class test in Week 5. For the class test you will be given a data set to analyse and produce a report using R Markdown given a basic template. Using the Basic Template from Moodle, write a report based on the following data sets.
+
+There are several categorical variables in the evals data set on the student evaluations of a large sample of professors, for example the ethnicity of the professors (“minority” or “not minority”) and the rank of the professors (i.e. low-status, mid-status or high-status). Choose one of these categorical variables and prepare a report describing the differences between the different categories of the average evaluation score of the professors.

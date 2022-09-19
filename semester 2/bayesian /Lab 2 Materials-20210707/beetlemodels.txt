@@ -1,0 +1,72 @@
+# model 1
+model
+{
+   for (j in 1:N) {
+      y[j] ~ dbin(theta[j], n[j])
+      logit(theta[j]) <- alpha + beta * x[j]
+      yhat[j] <- n[j] * theta[j]
+   }
+   alpha ~ dnorm(0.0, 1.0E-6)
+   beta  ~ dnorm(0.0, 1.0E-6)
+}
+
+# add centring
+model
+{
+   for (j in 1:N) {
+      y[j] ~ dbin(theta[j], n[j])
+      logit(theta[j]) <- alpha.star + beta * (x[j]-mean(x[]))
+      yhat[j] <- n[j] * theta[j]
+   }
+	 alpha <- alpha.star - beta * mean(x[])
+   alpha.star ~ dnorm(0.0, 1.0E-6)
+   beta ~ dnorm(0.0, 1.0E-6)
+}
+
+# add prediction
+model
+{
+   for (j in 1:N) {
+      y[j] ~ dbin(theta[j], n[j])
+      logit(theta[j]) <- alpha.star + beta * (x[j]-mean(x[]))
+      yhat[j] <- n[j] * theta[j]
+   }
+	 alpha <- alpha.star - beta * mean(x[])
+   alpha.star ~ dnorm(0.0, 1.0E-6)
+   beta ~ dnorm(0.0, 1.0E-6)
+	 xtilde <- 1.7
+	 ytilde ~ dbin(theta.tilde,60)
+	 logit(theta.tilde) <- alpha.star + beta * (xtilde-mean(x[]))
+}
+
+#probit version
+model
+{
+   for (j in 1:N) {
+      y[j] ~ dbin(theta[j], n[j])
+      probit(theta[j]) <- alpha.star + beta * (x[j]-mean(x[]))
+      yhat[j] <- n[j] * theta[j]
+   }
+	 alpha <- alpha.star - beta * mean(x[])
+   alpha.star ~ dnorm(0.0, 1.0E-6)
+   beta ~ dnorm(0.0, 1.0E-6)
+	 xtilde <- 1.7
+	 ytilde ~ dbin(theta.tilde,60)
+	 probit(theta.tilde) <- alpha.star + beta * (xtilde-mean(x[]))
+}
+
+#cloglog version
+model
+{
+   for (j in 1:N) {
+      y[j] ~ dbin(theta[j], n[j])
+      cloglog(theta[j]) <- alpha.star + beta * (x[j]-mean(x[]))
+      yhat[j] <- n[j] * theta[j]
+   }
+	 alpha <- alpha.star - beta * mean(x[])
+   alpha.star ~ dnorm(0.0, 1.0E-6)
+   beta ~ dnorm(0.0, 1.0E-6)
+	 xtilde <- 1.7
+	 ytilde ~ dbin(theta.tilde,60)
+	 cloglog(theta.tilde) <- alpha.star + beta * (xtilde-mean(x[]))
+}

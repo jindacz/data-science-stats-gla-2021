@@ -1,0 +1,256 @@
+"","Country","Continent","Population","Life","GDP","MilitaryExpenditure"
+"1","Afghanistan","Asia",33609937,44.64,1.285e+10,244150000
+"2","Akrotiri","Middle East",15700,?,?,?
+"3","Albania","Europe",3639453,77.96,1.352e+10,201448000
+"4","Algeria","Africa",34178188,74.02,1.713e+11,5652900000
+"5","American Samoa","Other",65628,73.72,462200000,?
+"6","Andorra","Europe",83888,82.51,?,?
+"7","Angola","Africa",12799293,38.2,9.595e+10,5469150000
+"8","Anguilla","Central/South America",14436,80.65,108900000,?
+"9","Antarctica","Other",?,?,?,?
+"10","Antigua and Barbuda","Central/South America",85632,74.76,1.126e+09,?
+"11","Arctic Ocean","Other",?,?,?,?
+"12","Argentina","Central/South America",40913584,76.56,3.387e+11,4403100000
+"13","Armenia","Asia",2967004,72.68,1.207e+10,784550000
+"14","Aruba","Central/South America",103065,75.28,2.258e+09,?
+"15","Ashmore and Cartier Islands","Asia",?,?,?,?
+"16","Australia","Other",21262641,81.63,1.069e+12,2.5656e+10
+"17","Austria","Europe",8210281,79.5,4.324e+11,3891600000
+"18","Azerbaijan","Asia",8238672,66.66,5.326e+10,1384760000
+"19","Bahamas The","Central/South America",309156,65.78,6.935e+09,34675000
+"20","Bahrain","Middle East",727785,75.16,1.968e+10,885600000
+"21","Bangladesh","Asia",156050883,60.25,8.304e+10,1245600000
+"22","Barbados","Central/South America",284589,73.94,3.777e+09,18885000
+"23","Belarus","Europe",9648533,70.63,5.768e+10,807520000
+"24","Belgium","Europe",10414336,79.22,4.954e+11,6440200000
+"25","Belize","Central/South America",307899,68.2,1.383e+09,19362000
+"26","Benin","Africa",8791832,59,6.94e+09,117980000
+"27","Bermuda","North America",67837,80.43,?,?
+"28","Bhutan","Asia",691141,66.13,1.368e+09,13680000
+"29","Bolivia","Central/South America",9775246,66.89,1.894e+10,359860000
+"30","Bosnia and Herzegovina","Europe",4613414,78.5,1.936e+10,871200000
+"31","Botswana","Africa",1990876,61.85,1.381e+10,455730000
+"32","Bouvet Island","Other",?,?,?,?
+"33","Brazil","Central/South America",198739269,71.99,1.665e+12,4.329e+10
+"34","British Indian Ocean Territory","Asia",?,?,?,?
+"35","British Virgin Islands","Central/South America",24491,77.26,839700000,?
+"36","Brunei","Asia",388190,75.74,1.718e+10,773100000
+"37","Bulgaria","Europe",7204687,73.09,4.943e+10,1285180000
+"38","Burkina Faso","Africa",15746232,52.95,8.242e+09,98904000
+"39","Burma","Asia",48137741,63.39,1.37e+10,287700000
+"40","Burundi","Africa",8988091,52.09,9.03e+08,53277000
+"41","Cambodia","Asia",14494293,62.1,1.03e+10,3.09e+08
+"42","Cameroon","Africa",18879301,53.69,2.5e+10,3.25e+08
+"43","Canada","North America",33487208,81.23,1.564e+12,1.7204e+10
+"44","Cape Verde","Africa",429474,71.61,1.845e+09,12915000
+"45","Cayman Islands","Central/South America",49035,80.44,?,?
+"46","Central African Republic","Africa",4511488,44.47,2.087e+09,22957000
+"47","Chad","Africa",10329208,47.7,9.106e+09,382452000
+"48","Chile","Central/South America",16601707,77.34,1.815e+11,4900500000
+"49","China","Asia",1338612968,73.47,4.222e+12,1.81546e+11
+"50","Christmas Island","Asia",1402,?,?,?
+"51","Clipperton Island","Central/South America",?,?,?,?
+"52","Cocos (Keeling) Islands","Asia",596,?,?,?
+"53","Colombia","Central/South America",45644023,72.81,2.498e+11,8493200000
+"54","Comoros","Africa",752438,63.47,5.57e+08,15596000
+"55","Congo Democratic Republic of the","Africa",68692542,54.36,1.296e+10,3.24e+08
+"56","Congo Republic of the","Africa",4012809,54.15,1.335e+10,413850000
+"57","Cook Islands","Other",11870,74.22,183200000,?
+"58","Coral Sea Islands","Other",?,?,?,?
+"59","Costa Rica","Central/South America",4253877,77.58,3.038e+10,121520000
+"60","Cote d'Ivoire","Africa",20617068,55.45,2.378e+10,380480000
+"61","Croatia","Europe",4489409,75.35,6.395e+10,1528405000
+"62","Cuba","Central/South America",11451652,77.45,5.518e+10,2096840000
+"63","Cyprus","Middle East",796740,78.33,2.559e+10,972420000
+"64","Czech Republic","Europe",10211904,76.81,2.172e+11,3171120000
+"65","Denmark","Europe",5500510,78.3,3.696e+11,4804800000
+"66","Dhekelia","Middle East",15700,?,?,?
+"67","Djibouti","Africa",516055,43.37,9.73e+08,36974000
+"68","Dominica","Central/South America",72660,75.55,3.65e+08,?
+"69","Dominican Republic","Central/South America",9650054,73.7,4.569e+10,365520000
+"70","Ecuador","Central/South America",14573101,75.3,5.467e+10,1530760000
+"71","Egypt","Africa",83082869,72.12,1.583e+11,5382200000
+"72","El Salvador","Central/South America",7185218,72.33,2.228e+10,1.114e+09
+"73","Equatorial Guinea","Africa",633441,61.61,2.016e+10,20160000
+"74","Eritrea","Africa",5647168,61.78,1.479e+09,93177000
+"75","Estonia","Europe",1299371,72.82,2.346e+10,469200000
+"76","Ethiopia","Africa",85237338,55.41,2.508e+10,752400000
+"77","European Union","Europe",491582852,78.67,1.885e+13,?
+"78","Falkland Islands (Islas Malvinas)","Central/South America",3140,?,105100000,?
+"79","Faroe Islands","Europe",48856,79.44,1.7e+09,?
+"80","Fiji","Other",944720,70.73,3.783e+09,83226000
+"81","Finland","Europe",5250275,78.97,2.812e+11,5.624e+09
+"82","France","Europe",64057792,80.98,2.978e+12,7.7428e+10
+"83","French Polynesia","Other",287032,76.71,6.1e+09,?
+"84","French Southern and Antarctic Lands","Other",?,?,?,?
+"85","Gabon","Africa",1514993,53.11,1.591e+10,540940000
+"86","Gambia The","Africa",1782893,55.35,7.79e+08,3895000
+"87","Gaza Strip","Middle East",1551859,73.42,6.641e+09,?
+"88","Georgia","Asia",4615807,76.72,1.328e+10,78352000
+"89","Germany","Europe",82329758,79.26,3.818e+12,5.727e+10
+"90","Ghana","Africa",23832495,59.85,1.772e+10,141760000
+"91","Gibraltar","Europe",28034,80.19,1.066e+09,?
+"92","Greece","Europe",10737428,79.66,3.735e+11,16060500000
+"93","Greenland","Other",57600,70.07,1.7e+09,?
+"94","Grenada","Central/South America",90739,65.95,6.57e+08,?
+"95","Guam","Other",?,?,?,?
+"96","Guatemala","Central/South America",13276517,70.29,3.628e+10,145120000
+"97","Guernsey","Europe",65870,80.77,2.742e+09,?
+"98","Guinea","Africa",10057975,57.09,4.454e+09,75718000
+"99","Guinea-Bissau","Africa",1533964,47.9,4.42e+08,13702000
+"100","Guyana","Central/South America",772298,66.68,1.134e+09,20412000
+"101","Haiti","Central/South America",9035536,60.78,6.966e+09,27864000
+"102","Heard Island and McDonald Islands","Other",?,?,?,?
+"103","Holy See (Vatican City)","Europe",826,?,?,?
+"104","Honduras","Central/South America",7792854,69.4,1.378e+10,82680000
+"105","Hong Kong","Asia",7055071,81.86,2.238e+11,?
+"106","Hungary","Europe",9905596,73.44,1.314e+11,2299500000
+"107","Iceland","Other",306694,80.67,1.902e+10,?
+"108","India","Asia",1166079217,69.89,1.237e+12,3.0925e+10
+"109","Indonesia","Asia",240271522,70.76,5.108e+11,1.5324e+10
+"110","Iran","Middle East",66429284,71.14,3.823e+11,9557500000
+"111","Iraq","Middle East",28945657,69.94,9.38e+10,8066800000
+"112","Ireland","Europe",4203200,78.24,2.85e+11,2.565e+09
+"113","Isle of Man","Europe",76512,78.82,2.719e+09,?
+"114","Israel","Middle East",7233701,80.73,1.887e+11,13775100000
+"115","Italy","Europe",58126212,80.2,2.399e+12,4.3182e+10
+"116","Jamaica","Central/South America",2825928,73.53,1.347e+10,80820000
+"117","Jan Mayen","Other",?,?,?,?
+"118","Japan","Asia",127078679,82.12,4.844e+12,3.8752e+10
+"119","Jersey","Europe",91626,79.75,5.1e+09,?
+"120","Jordan","Middle East",6342948,78.87,1.912e+10,1644320000
+"121","Kazakhstan","Asia",15399437,67.87,1.412e+11,1270800000
+"122","Kenya","Africa",39002772,57.86,3.142e+10,879760000
+"123","Kiribati","Other",112850,63.22,7.1e+07,?
+"124","Korea North","Asia",22665345,63.81,2.62e+10,?
+"125","Korea South","Asia",48508972,78.72,8.575e+11,23152500000
+"126","Kosovo","Europe",1804838,?,3.237e+09,?
+"127","Kuwait","Middle East",2691158,77.71,1.597e+11,8464100000
+"128","Kyrgyzstan","Asia",5431747,69.43,5.05e+09,70700000
+"129","Laos","Asia",6834942,56.68,5.187e+09,25935000
+"130","Latvia","Europe",2231503,72.15,3.39e+10,406800000
+"131","Lebanon","Middle East",4017095,73.66,2.802e+10,868620000
+"132","Lesotho","Africa",2130819,40.38,1.652e+09,42952000
+"133","Liberia","Africa",3441790,41.84,9.26e+08,12038000
+"134","Libya","Africa",6310434,77.26,1.085e+11,4231500000
+"135","Liechtenstein","Europe",34761,80.06,4.993e+09,?
+"136","Lithuania","Europe",3555179,74.9,4.875e+10,5.85e+08
+"137","Luxembourg","Europe",491775,79.33,5.761e+10,518490000
+"138","Macau","Asia",559846,84.36,2.204e+10,?
+"139","Macedonia","Europe",2066718,74.68,9.624e+09,577440000
+"140","Madagascar","Africa",20653556,62.89,9.729e+09,97290000
+"141","Malawi","Africa",14268711,43.82,4.082e+09,53066000
+"142","Malaysia","Asia",25715819,73.29,2.147e+11,4358410000
+"143","Maldives","Asia",396334,73.97,1.259e+09,69245000
+"144","Mali","Africa",12666987,50.35,8.776e+09,166744000
+"145","Malta","Europe",405165,79.44,8.584e+09,60088000
+"146","Marshall Islands","Other",64522,71.19,161700000,?
+"147","Mauritania","Africa",3129486,60.37,3.625e+09,199375000
+"148","Mauritius","Africa",1284264,74,8.128e+09,24384000
+"149","Mayotte","Africa",223765,62.91,?,?
+"150","Mexico","North America",111211789,76.06,1.143e+12,5.715e+09
+"151","Micronesia Federated States of","Other",107434,70.94,238100000,?
+"152","Moldova","Europe",4320748,70.8,6.197e+09,24788000
+"153","Monaco","Europe",32965,80.09,?,?
+"154","Mongolia","Asia",3041142,67.65,4.991e+09,69874000
+"155","Montenegro","Europe",672180,?,4.515e+09,?
+"156","Montserrat","Central/South America",5097,72.76,?,?
+"157","Morocco","Africa",34859364,71.8,9.047e+10,4523500000
+"158","Mozambique","Africa",21669278,41.18,9.788e+09,78304000
+"159","Namibia","Africa",2108665,51.24,7.781e+09,287897000
+"160","Nauru","Other",14019,64.2,?,?
+"161","Navassa Island","Central/South America",?,?,?,?
+"162","Nepal","Asia",28563377,65.46,1.264e+10,202240000
+"163","Netherlands","Europe",16715999,79.4,9.095e+11,1.4552e+10
+"164","Netherlands Antilles","Central/South America",227049,76.65,?,?
+"165","New Caledonia","Other",227436,74.98,3.3e+09,?
+"166","New Zealand","Other",4213418,80.36,1.357e+11,1.357e+09
+"167","Nicaragua","Central/South America",5891199,71.5,6.561e+09,39366000
+"168","Niger","Africa",15306252,52.6,5.322e+09,69186000
+"169","Nigeria","Africa",149229090,46.94,2.203e+11,3304500000
+"170","Niue","Other",1398,?,10010000,?
+"171","Norfolk Island","Other",2141,?,?,?
+"172","Northern Mariana Islands","Other",88662,76.7,633400000,?
+"173","Norway","Europe",4660539,79.95,4.811e+11,9140900000
+"174","Oman","Middle East",3418085,74.16,5.632e+10,6420480000
+"175","Pakistan","Asia",176242949,64.49,1.609e+11,4.827e+09
+"176","Palau","Other",20796,71.22,1.64e+08,?
+"177","Panama","Central/South America",3360474,77.25,2.342e+10,234200000
+"178","Papua New Guinea","Other",6057263,66.34,6.363e+09,89082000
+"179","Paracel Islands","Asia",?,?,?,?
+"180","Paraguay","Central/South America",6995655,75.77,1.636e+10,163600000
+"181","Peru","Central/South America",29546963,70.74,1.314e+11,1.971e+09
+"182","Philippines","Asia",97976603,71.09,1.686e+11,1517400000
+"183","Pitcairn Islands","Other",48,?,?,?
+"184","Poland","Europe",38482919,75.63,5.674e+11,9702540000
+"185","Portugal","Europe",10707924,78.21,2.555e+11,5876500000
+"186","Puerto Rico","Central/South America",3971020,78.53,8.8e+10,?
+"187","Qatar","Middle East",833285,75.35,1.169e+11,1.169e+10
+"188","Romania","Europe",22215421,72.45,2.139e+11,4064100000
+"189","Russia","Europe",140041247,66.03,1.757e+12,6.8523e+10
+"190","Rwanda","Africa",10473282,50.52,4.027e+09,116783000
+"191","Saint Barthelemy","Central/South America",7448,?,?,?
+"192","Saint Helena","Africa",7637,78.44,?,?
+"193","Saint Kitts and Nevis","Central/South America",40131,73.2,5.59e+08,?
+"194","Saint Lucia","Central/South America",160267,76.45,1.031e+09,?
+"195","Saint Martin","Central/South America",29820,?,?,?
+"196","Saint Pierre and Miquelon","North America",7051,79.07,?,?
+"197","Saint Vincent and the Grenadines","Central/South America",104574,73.65,5.97e+08,?
+"198","Samoa","Other",219998,71.86,5.37e+08,?
+"199","San Marino","Europe",30324,81.97,8.5e+08,?
+"200","Sao Tome and Principe","Africa",212679,68.32,1.6e+08,1280000
+"201","Saudi Arabia","Middle East",28686633,76.3,4.677e+11,4.677e+10
+"202","Senegal","Africa",13711597,59,1.39e+10,194600000
+"203","Serbia","Europe",7379339,73.9,5.218e+10,?
+"204","Seychelles","Africa",87476,73.02,7.79e+08,15580000
+"205","Sierra Leone","Africa",6440053,41.24,1.971e+09,45333000
+"206","Singapore","Asia",4657542,81.98,1.545e+11,7570500000
+"207","Slovakia","Europe",5463046,75.4,1.006e+11,1881220000
+"208","Slovenia","Europe",2005692,76.92,5.701e+10,969170000
+"209","Solomon Islands","Other",595613,73.69,4.6e+08,13800000
+"210","Somalia","Africa",9832017,49.63,2.6e+09,23400000
+"211","South Africa","Africa",49052489,48.98,3.004e+11,5106800000
+"212","South Georgia and the South Sandwich Islands","Other",?,?,?,?
+"213","Spain","Europe",40525002,80.05,1.683e+12,2.0196e+10
+"214","Spratly Islands","Asia",?,?,?,?
+"215","Sri Lanka","Asia",21324791,75.14,3.8e+10,9.88e+08
+"216","Sudan","Africa",41087825,51.42,6.219e+10,1865700000
+"217","Suriname","Central/South America",481267,73.73,2.984e+09,17904000
+"218","Svalbard","Other",2116,?,?,?
+"219","Swaziland","Africa",1123913,31.88,2.968e+09,139496000
+"220","Sweden","Europe",9059651,80.86,5.129e+11,7693500000
+"221","Switzerland","Europe",7604467,80.85,4.926e+11,4.926e+09
+"222","Syria","Middle East",20178485,71.19,4.449e+10,2624910000
+"223","Taiwan","Asia",22974347,77.96,4.016e+11,8835200000
+"224","Tajikistan","Asia",7349145,65.33,4.788e+09,186732000
+"225","Tanzania","Africa",41048532,52.01,2.063e+10,41260000
+"226","Thailand","Asia",65905410,73.1,2.721e+11,4897800000
+"227","Timor-Leste","Asia",1131612,67.27,4.89e+08,?
+"228","Togo","Africa",6019877,58.69,3.009e+09,48144000
+"229","Tokelau","Other",1416,?,?,?
+"230","Tonga","Other",120898,70.73,2.58e+08,2322000
+"231","Trinidad and Tobago","Central/South America",1229953,70.86,2.416e+10,72480000
+"232","Tunisia","Africa",10486339,75.78,4.177e+10,584780000
+"233","Turkey","Middle East",76805524,71.96,7.989e+11,42341700000
+"234","Turkmenistan","Asia",4884887,67.87,2.882e+10,979880000
+"235","Turks and Caicos Islands","Central/South America",22942,75.42,?,?
+"236","Tuvalu","Other",12373,69.29,14940000,?
+"237","Uganda","Africa",32369558,52.72,1.504e+10,330880000
+"238","Ukraine","Europe",45700395,68.25,1.98e+11,2.772e+09
+"239","United Arab Emirates","Middle East",4798491,76.11,2.7e+11,8.37e+09
+"240","United Kingdom","Europe",61113205,79.01,2.787e+12,6.6888e+10
+"241","United States","North America",307212123,78.11,1.433e+13,5.81798e+11
+"242","United States Pacific Island Wildlife Refuges","Other",?,?,?,?
+"243","Uruguay","Central/South America",3494382,76.35,3.13e+10,500800000
+"244","Uzbekistan","Asia",27606007,71.96,2.662e+10,532400000
+"245","Vanuatu","Other",218519,63.98,5.6e+08,?
+"246","Venezuela","Central/South America",26814843,73.61,3.318e+11,3981600000
+"247","Vietnam","Asia",86967524,71.58,9.088e+10,2.272e+09
+"248","Virgin Islands","Central/South America",109825,79.05,?,?
+"249","Wake Island","Other",?,?,?,?
+"250","Wallis and Futuna","Other",15289,78.2,?,?
+"251","West Bank","Middle East",2461267,74.54,6.641e+09,?
+"252","Western Sahara","Africa",405210,54.32,?,?
+"253","Yemen","Middle East",23822783,63.27,2.756e+10,1818960000
+"254","Zambia","Africa",11862740,38.63,1.523e+10,274140000
+"255","Zimbabwe","Africa",11392629,45.77,4.548e+09,172824000

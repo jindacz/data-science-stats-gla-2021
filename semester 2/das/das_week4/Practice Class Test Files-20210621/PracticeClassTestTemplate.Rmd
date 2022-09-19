@@ -1,0 +1,43 @@
+---
+title: "Report Title"
+author: "Student Number"
+output:
+  pdf_document:
+    latex_engine: pdflatex
+    number_sections: no
+    keep_tex: true
+  html_document:
+    df_print: paged
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
+```
+
+```{r libraries}
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(kableExtra)
+library(gridExtra)
+```
+
+```{r data, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+cats <- read_csv("cats.csv")
+```
+
+# Introduction {#sec:Intro}
+
+
+# Exploratory Data Analysis {#sec:EDA}
+
+
+# Formal Data Analysis {#sec:FDA}
+
+
+# Conclusions {#sec:Conc}
+
+***
+\newpage
+# FURTHER TASK

@@ -1,0 +1,47 @@
+model
+{ 
+   for(j in 1:N) {
+      y[j] ~ dbin(theta[j], n[j])
+      logit(theta[j]) <- a0 + a1 * x1[j] + a2 * x2[j] + a12 * x1[j] * x2[j]
+   }
+   a0 ~ dnorm(0.0, 1.0E-6)
+   a1 ~ dnorm(0.0, 1.0E-6)
+   a2 ~ dnorm(0.0, 1.0E-6)
+   a12 ~ dnorm(0.0, 1.0E-6)
+}
+
+
+# model for prediction of ytilde
+model
+{ 
+   for(j in 1:N) {
+      y[j] ~ dbin(theta[j], n[j])
+      logit(theta[j]) <- a0 + a1 * x1[j] + a2 * x2[j] + a12 * x1[j] * x2[j]
+   }
+   a0 ~ dnorm(0.0, 1.0E-6)
+   a1 ~ dnorm(0.0, 1.0E-6)
+   a2 ~ dnorm(0.0, 1.0E-6)
+   a12 ~ dnorm(0.0, 1.0E-6)
+   y.tilde ~ dbin(theta.tilde, 70)
+   logit(theta.tilde) <- a0   # since x1 = x2 = 0 
+}
+
+
+# random effects logistic regression
+model
+{ 
+   for(j in 1:N) {
+      y[j] ~ dbin(theta[j], n[j])
+      b[j] ~ dnorm(0.0, tau)
+      logit(theta[j]) <- a0 + a1*x1[j] + a2*x2[j] + a12*x1[j]*x2[j] + b[j]
+   }
+   a0 ~ dnorm(0.0, 1.0E-6)
+   a1 ~ dnorm(0.0, 1.0E-6)
+   a2 ~ dnorm(0.0, 1.0E-6)
+   a12 ~ dnorm(0.0, 1.0E-6)
+   tau <- 1/(sigma*sigma)
+   sigma ~ dunif(0, 100)
+   y.tilde ~ dbin(theta.tilde, 70)
+   logit(theta.tilde) <- a0 + b.tilde  # since x1 = x2 = 0 
+   b.tilde ~ dnorm(0.0, tau)
+}

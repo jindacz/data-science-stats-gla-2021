@@ -1,0 +1,145 @@
+---
+title: "Class Test 2561551"
+author: "Jinda(LousiY) Zhang"
+output:
+  pdf_document:
+    latex_engine: pdflatex
+    number_sections: no
+  html_document:
+    df_print: paged
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
+```
+
+```{r libraries}
+library(tidyverse)
+library(moderndive)
+library(skimr)
+library(kableExtra)
+library(gridExtra)
+```
+
+
+```{r data, echo = FALSE, eval = TRUE}
+setwd("/Users/kurisuuu/Downloads/Class\ Test\ Files-20210610")
+rugby_height <- read_csv("rugby_height.csv")
+```
+
+# Introduction {#sec:Intro}
+In the sport of rugby, there are players playing different positions, and it is of interest to see each position's trait such as speed, strength and accuracy. 89 backward position and forward position participates in the experiments and they each had their height in centimeter measured. The data including the position of each player, is analyzed in this report.
+
+This report presents numerical and graphical summaries of the height of the player positions and fits a linear model to estimate the difference, on average, between the height of forward and back positions.
+
+
+# Exploratory Data Analysis {#sec:EDA}
+
+```{r, eval = TRUE}
+rugby_height %>%
+  group_by(position) %>%
+  summarise(n=n(),Mean=round(mean(height_cm),digits=1), St.Dev=round(sd(height_cm),digits=1),
+            Min=min(height_cm), Q1 = quantile(height_cm,0.25), Median=median(height_cm),
+            Q3 = quantile(height_cm,0.75), Max=max(height_cm)) %>%
+  kable(caption = '\\label{tab:summaries} Summary statistics on
+  height by position of 89 players.') %>%
+  kable_styling(latex_options = "hold_position")
+```
+Table \ref{tab:summaries} shows that there were more forward than back in the experiment(56 compared to 33) and that the summaries of the height of the back were greater than the correponding summaries of the height of back. For example the mean height of the back were 182.7 cm compared to 181.2 cm for the mean height of forward. We also find that the variability in the back's height, as measured by the standard deviation of 4.4 cm, was larger than the standard deviation of 3.6 cm for forward's hegiht. These differences also be found the in the following boxplot that summarise the distribution of the height of back and forward cat.
+
+
+```{r boxplot, out.width = '68%', fig.align = "center",fig.cap = "\\label{fig:box} Height by position.", fig.pos = 'H'}
+ggplot(rugby_height, aes(x = position, y = height_cm)) +
+  geom_boxplot() +
+  labs(x = "Player Position", y = "Height (cm)",
+       title = "Height of 89 Rugby Players")
+```
+
+The boxplot shows that the back having larger height compared to the forward height and the height of the back are distributed more widely. There are also potentially 5 outliers(1 back and 4 forward) which have unusually height.
+  
+
+
+# Formal Data Analysis {#sec:FDA}
+
+To analyze the height of rugby player formally, we start by fitting the following model to the data.
+$$\widehat{\mbox{Height}}=\widehat{\alpha}+\widehat{\beta}_{\mbox{Forward}}+
+\cdot \mathbb{I}_{\mbox{Forward}}(x)$$
+where  
+  
+* the intercept $\widehat{\alpha}$ is the mean height for the baseline category of Back;
+  
+* $\widehat{\beta}_{\mbox{Forward}}$ is the difference in the mean height of a Forward relative to the baseline category Back; and
+  
+* $\mathbb{I}_{\mbox{Forward}}(x)$ is an indicator function s.t.  
+  
+$$\mathbb{I}_{\mbox{Forward}}(x)=\left\{
+\begin{array}{ll}
+1 ~~~ \mbox{if Position of} ~ x \mbox{th observation is Forward},\\
+0 ~~~ \mbox{Otherwise}.\\
+\end{array}
+\right.$$
+
+while the model is fitted to the data, the following estimate of $\alpha$(intercept) and $\beta_{\mbox{Forward}}$(positionForward) are returned:
+
+```{r, eval = TRUE}
+model=lm(height_cm~position,data=rugby_height)
+get_regression_table(model)%>%
+  dplyr::select(term,estimate)%>% 
+  kable(caption='\\label{tab:reg} Estimates of the parameters from the fitted linear
+regression model.')%>%
+  kable_styling(latex_options="HOLD_position")
+```
+
+As a result,the model estimates the average height of back position in 182.697cm and that the Forward's height are on average 1.447cm lower than the Back's height.
+
+
+# Conclusions {#sec:Conc}
+
+In summary, we estimate that the forward position have height which weight 1.447cm less than the back position on average. Also, we estimate the average height of back position in 182.697cm and the average height of forward position is 181.2cm.
+
+In addition to this, the centers of distributions of forward and backward position' height are different. We also find that the spread of the back height is greater than the spread of the forward's height. This may be probmatic if we want to use standard linear model to further analyze this data. As a result, we may want to use the models that allow for difference in variance within different group.
+
+***
+
+***
+\newpage
+# FURTHER TASK
+
+## Part a
+```{r, eval = TRUE,echo=T}
+  setwd("/Users/kurisuuu/Downloads/Class\ Test\ Files-20210610")
+  rugby_full <- read_csv("rugby_full.csv")
+```
+```{r, eval = TRUE,echo=T}
+rugby_full <- rugby_full %>%
+  mutate(games_per_year = caps/years_playing)
+```
+
+## Part b
+Yes, because each variable forms a column. Each observation forms a row. Each type of observational unit forms a table.
+
+## Part c
+```{r, eval = TRUE,echo=T,fig.cap = "\\label{fig:fig2} number of international appearance against number of years playing by position ", fig.pos = 'H'}
+
+ggplot(rugby_full,mapping=aes(x=caps,y=years_playing,group=position,color=position,shape=position))+
+  geom_point()+
+  facet_wrap(~team)+
+  labs(x="Number of international appearances",y="number of years playing",title="number of international appearance against number of years playing")
+```
+
+\newpage
+## Part d
+```{r, eval = TRUE,echo=T,fig.cap = "\\label{fig:fig3} Height and weight of players in all British Isles teams by position", fig.pos = 'H'}
+rugby_bri<- rugby_full %>%
+  filter(team == "England"|team=="Ireland"|team=="Scotland"|team=="Wales") 
+  
+ggplot(rugby_bri,mapping=aes(x=height_cm,y=weight_kg,group=position,color=position,shape=position))+
+  geom_point()+ 
+  labs(x="Height (cm)",y="Weight (kg)",title="Height and weight of players in all British Isles teams")+
+  geom_smooth(method = "lm", se = FALSE, aes(color=position, linetype=position))
+  
+```
+
+
+

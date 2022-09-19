@@ -1,0 +1,7 @@
+list(alpha= 0, beta = 0)
+
+# after recentring
+list(alpha.star = 0, beta = 0)
+
+# after recentring and with a prediction for x=1.7
+list(alpha.star = 0, beta = 0, ytilde = 55)

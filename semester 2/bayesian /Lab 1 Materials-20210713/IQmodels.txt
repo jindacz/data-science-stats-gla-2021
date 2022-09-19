@@ -1,0 +1,43 @@
+model{
+   theta ~ dunif(0,1)
+}
+
+
+model{
+   y ~ dbin(theta, n)
+   theta ~ dunif(0,1)
+}
+
+
+model{
+   y ~ dbin(theta, n)
+   theta ~ dunif(0,1)
+   # following indicator is 1 if theta >= 0.5
+   psi <- step(theta - 0.5)
+}
+
+
+model{
+   y ~ dbin(theta, n)
+   theta ~ dbeta(0.5, 0.5)
+   # following indicator is 1 if theta >= 0.5
+   psi <- step(theta - 0.5)
+}
+
+
+model{
+   y ~ dbin(theta, n)
+   theta ~ dbeta(12, 12)
+   # following indicator is 1 if theta >= 0.5
+   psi <- step(theta - 0.5)
+}
+
+
+model{
+   y ~ dbin(theta, n)
+   # Normal prior on the logits
+   phi ~ dnorm(0, 0.25)
+   logit(theta) <- phi
+   # following indicator is 1 if theta >= 0.5
+   psi <- step(theta - 0.5)
+}

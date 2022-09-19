@@ -1,0 +1,50 @@
+---
+title: "Week 6"
+author: "Student Number"
+output:
+  pdf_document:
+    latex_engine: pdflatex
+    number_sections: no
+    keep_tex: true
+  html_document:
+    df_print: paged
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE, comment = NA)
+```
+
+
+# Introduction {#sec:intro}
+
+In Week 4’s Lab we introduced regression modelling where we modeled the relationship between an outcome variable y and a single explanatory variable x. We only included one explanatory variable x, which was either a continuous or a categorical variable. This week, we shall examine fitting regression models with more than one explanatory variable. This is known as multiple regression.
+
+When fitting regression models with multiple explanatory variables, the interpretation of an explanatory variable is made in association with the other variables. For example, if we wanted to model income then we may consider an individual’s level of education, and perhaps the wealth of their parents. Then, when interpreting the effect an individuals level of education has on their income, we would also be considering the effect of the wealth of their parents simultaneously, as these two variables are likely to be related.
+
+Create a .Rmd file to load the following packages into R:
+
+```{r, eval = TRUE,echo=T}
+library(ggplot2)
+library(dplyr)
+library(moderndive)
+library(ISLR)
+library(skimr)
+library(plotly)
+library(tidyr)
+library(jtools)
+```
+
+
+
+# Exploratory Data Analysis {#sec:EDA}
+
+
+# Formal Data Analysis {#sec:FDA}
+
+
+# Conclusions {#sec:Conc}
+
+***
+\newpage
+# FURTHER TASK

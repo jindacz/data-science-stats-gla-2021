@@ -1,0 +1,179 @@
+load(url("http://www.stats.gla.ac.uk/~rhaggarty/intro2r/classtest2.RData"))
+
+## Task 1
+## a)
+#data available via link above - this code is what is required for 1a)
+#arclake <- read.csv("arclake.csv", na.strings="-") 
+
+#optional ...
+#attach(arclake)
+
+## b)
+arclake$id[which.max(arclake$amplitude)]
+arclake$id[which.max(arclake$lswt)]
+
+## c)
+location <- cut(latitude, c(-200,-5,5,200), labels=c("Southern", "Equatorial", "Northern"))
+table(location)
+
+## d)
+lat <- arclake$latitude
+lon <- arclake$longitude
+transform(arclake, d=6373*acos(sin(lat)^2+cos(lat)^2*cos(lon)))
+
+## e)
+plot(arclake$lswt,arclake$amplitude, pch=19, col=arclake$group, main="Arclake", xlab="LSWT (Celsius)", ylab="Amplitude (Celsisus)")
+
+## f)
+data <- data.frame(cbind(arclake$lswt, arclake$amplitude))
+gm <- t(sapply(split(data, arclake$group), colMeans))
+#alternatively
+gm <- do.call(rbind, by(data,group, colMeans))
+## or with a loop
+gm <- matrix(NA, 8,2)
+for(i in 1:8){
+  gm[i,] <- c(mean(lswt[group==i]), mean(amplitude[group==i]))
+  }
+colnames(gm) <- c("meanlswt", "meanamp")
+
+## g)
+plot(arclake$lswt, arclake$amplitude, xlab="LSWT (Celsius)", ylab="Amplitude (Celsius)", main="Arclake", col=arclake$group, pch=19, cex=0.5)
+segments(x0=lswt, y0=amplitude, x1=gm[group,1], y1=gm[group,2], col=group )
+
+#alternatively
+for(i in 1:8){
+    groupset <- data[arclake$group==i,]
+  for(j in 1:nrow(groupset)){
+      lines(rbind(groupset[j,],gm[i,]), col=i)
+    }
+}
+
+
+
+## Task 2
+## a)
+
+mat <- rbind(c(0, 4, 0, 51),
+             c(4, 39, 0, 0),
+             c(41, 0, 38, 0))
+
+## b)
+
+contsums <- function(mat){
+  ni <- rowSums(mat)
+  nj <- colSums(mat)
+  nij <- c(mat)
+  list(ni=ni, nj=nj, nij=nij)
+  }
+
+##c
+
+
+indices <- function(tab){
+  mylist <- contsums(tab)
+  a <- sum(choose(mylist$nij,2))
+  b <- sum(choose(mylist$ni,2))-a
+  c <- sum(choose(mylist$nj,2))-a
+  n <- sum(tab)
+  d <- choose(n,2)-a-b-c
+  list(a=a, b=b,c=c,d=d)
+}
+
+
+## d)
+rand <- function(tab){
+  ind <-indices(tab)
+  (ind$a+ind$b)/(ind$a+ind$b+ind$c+ind$d)
+}
+
+rand(tab=mat)
+
+
+
+## Task 3
+## a)
+slope <- function(xy1, xy2){
+  (xy2[2]-xy1[2])/(xy2[1]-xy1[1])
+}
+
+## b)
+theilsen <-  function(xx,yy) {
+  data <- cbind(xx,yy)
+  
+  ## create a condition that will indicate if there are any missing values
+  missing <- apply(is.na(data),1,any)
+
+  if(any(missing)) {
+      # provide a warning
+      warning("Missing data is present and affected points will be removed.")
+      # remove the missing data
+      data <- data[-missing, ]
+  }
+  
+  # for n points there are n*(n-1) pairs of points 
+  n <- nrow(data) 
+  S <- matrix(NA,n,n)
+  for(i in 1:(n-1)){
+    for(j in (i+1):n) {
+      if(i != j) {
+        S[i,j] <- slope(data[i,], data[j,])
+      }
+    }
+  }
+  b <- median(S, na.rm=TRUE)
+  a <- median(data[,2] - b*data[,1], na.rm=TRUE)
+  return(c(a,b))
+}
+
+## c)
+load("test.Rdata")
+plot(test[,1], test[,2])
+## d)
+abline(theilsen(test[,1], test[,2]))
+
+
+
+
+## Task 4
+## a)
+# Generates coordinates of the random needle of length l
+simulate.needle <- function(l) {
+  from <- runif(2)                # Draw the coordinates of one end from U[0,1]
+  theta <- 2*pi*runif(1)          # Draw the angle at random
+  to <- from - l * c(sin(theta), cos(theta))
+  list(from=from, to=to)
+}
+
+
+## b)
+# Returns TRUE if the needle intersects one of the lines (which are a distance delta apart)
+intersects.line <- function(needle, delta) {
+  return(floor(needle$from[1]/delta)!=floor(needle$to[1]/delta))
+}
+# Explanation: Dividing by delta makes distance between lines one.
+#              This implies: intersection if different leading digit.
+
+
+## c)
+n <- 1e2                                        # Set sample size
+n.intersect <- 0                                 # Set counter for intersections
+delta <- 0.2                                     # Distance between lines
+l <- 0.1                                         # Set length of line
+for (i in 1:n) {
+  needle <- simulate.needle(l)                   # Draw a random line
+  if (intersects.line(needle, delta)) {          # In there is an intersection ...
+    n.intersect <- n.intersect+1                 # ... increment counter
+}}
+
+n.intersect                                      # Observed count
+2 * n / pi * l / delta                           # Expected count
+
+
+
+
+
+
+
+
+
+
