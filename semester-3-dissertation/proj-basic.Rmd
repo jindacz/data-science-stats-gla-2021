@@ -1,0 +1,603 @@
+---
+title: "Modelling the progression of world records in athletics - Events over middle distances"
+author: Jinda(Cecil) Zhang
+output: 
+  pdf_document: 
+    number_sections: yes
+fig_caption: yes
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set( eval=TRUE,warning = FALSE,message = FALSE, comment = NA)
+```
+
+```{r libraries, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+library(ggplot2)
+library(dplyr)
+library(sjPlot)
+library(stats)
+library(janitor)
+library(jtools)
+library(moderndive)
+library(gapminder)
+library(skimr)
+library(kableExtra)
+library(gridExtra)
+library(GGally)
+library(MASS)
+library(ROCR)
+library(modelr)
+library(mgcv)
+library(olsrr)
+library(gamclass)
+```
+
+```{r dataset,echo = FALSE}
+setwd("/Users/kurisuuu/Documents/glasgow_stats_2021/semester\ 3/Modelling\ the\ progression\ of\ world\ records\ in\ athletics\ -\ Events\ over\ middle\ distances")
+
+Men1500mori=read.csv("Men1500m.csv")
+Men1500m=read.csv("Men1500m.csv")
+Men400m=read.csv("Men400m.csv")
+Men800m=read.csv("Men800m.csv")
+Women1500m=read.csv("Women1500m.csv")
+Women400m=read.csv("Women400m.csv")
+Women800m=read.csv("Women800m.csv")
+
+Men1500m=transform(Men1500m,class="Men1500m",sex="M",Date=as.Date(Date,"%d/%m/%Y"),DOB=as.Date(DOB,"%d/%m/%Y"))
+Men1500m=transform(Men1500m,age=as.integer(Date-as.Date(DOB))/365,Speed=1500/Time)
+
+Men400m=transform(Men400m,class="Men400m",sex="M",Date=as.Date(Date,"%d/%m/%Y"),DOB=as.Date(DOB,"%d/%m/%Y"))
+Men400m=transform(Men400m,age=as.integer(Date-as.Date(DOB))/365,Speed=400/Time)
+
+Men800m=transform(Men800m,class="Men800m",sex="M",Date=as.Date(Date,"%d/%m/%Y"),DOB=as.Date(DOB,"%d/%m/%Y"))
+Men800m=transform(Men800m,age=as.integer(Date-as.Date(DOB))/365,Speed=800/Time)
+
+Women1500m=transform(Women1500m,class="Women1500m",sex="F",Date=as.Date(Date,"%d/%m/%Y"),DOB=as.Date(DOB,"%d/%m/%Y"))
+Women1500m=transform(Women1500m,age=as.integer(Date-as.Date(DOB))/365,Speed=1500/Time)
+
+Women400m=transform(Women400m,class="Women400m",sex="F",Date=as.Date(Date,"%d/%m/%Y"),DOB=as.Date(DOB,"%d/%m/%Y"))
+Women400m=transform(Women400m,age=as.integer(Date-as.Date(DOB))/365,Speed=400/Time)
+
+Women800m=transform(Women800m,class="Women800m",sex="F",Date=as.Date(Date,"%d/%m/%Y"),DOB=as.Date(DOB,"%d/%m/%Y"))
+Women800m=transform(Women800m,age=as.integer(Date-as.Date(DOB))/365,Speed=800/Time)
+
+all=rbind(Men1500m,Women1500m,
+          Men400m,Women400m,
+          Men800m,Women800m)
+all1500m=rbind(Men1500m,Women1500m)
+all400m=rbind(Men400m,Women400m)
+all800m=rbind(Men800m,Women800m)
+
+male=rbind(Men1500m,Men400m,Men800m)
+female=rbind(Women1500m,Women400m,Women800m)
+```
+
+#  Introduction to the problem {#sec:intro}
+
+## Discussion of the context
+Data are available on the progression of world record times for the following events - 400 metres, 800 metres and 1500 metres for both men and women. The data are stored in Men400m.csv, Men800m.csv, Men1500m.csv, Women400m.csv, Women800m.csv and Women1500m.csv. Each file contains the following eight pieces of information for every ratified occasion on which the previous world record was beaten.
+
+
+## Aims of the proposed research
+* For each event separately, fit and assess a model to the world record times.
+
+* Use the best-fitting model type to compare the patterns of progress in the three events for men and women separately.
+
+* Use the best-fitting model type to compare the patterns of progress for men and women in each event separately.
+
+## Questions of interest
+* For each event separately, how fast is the progress of world record change over time?
+
+* For men and women separately, how fast is the progress of world record change over time?
+
+* For each event separately, how fast is the progress of world record change over time?
+
+* When will the next world records breaking is going to happen?
+
+## Description of the study and variables involved
+* Index - A serial number from 1 to n.
+
+* Time - The new world record time (in seconds).
+
+* Competitor - The name of the new world record holder.
+
+* DOB - The new world record holder’s date of birth (dd/mm/yyyy).
+
+* Country - The country that the new world record holder represented (a 3-letter code).
+
+* Venue - Where the new world record was set.
+
+* Date - The date when the new world record was set.  
+
+* Altitude - The altitude of city that events happened.
+
+* Age - which is calculated by (Date-DOB)/365.
+
+* Speed - Speed of athletics in match (m/s).
+
+
+
+#  Description of the methods {#sec:met}
+
+## Description of the statistical methods used
+
+In this study, linear regression with its transformations, polynomial regression, Generalized additive models are used to investigate the relationship between world records and date.
+
+
+A **linear model** (LM),  describes a quantitative response in terms of a linear combination of predictors (Faraway, 2009). Suppose we want to model the response Y in terms of three predictors, ${\mbox{X}}_{\mbox{1}}$,${\mbox{X}}_{\mbox{2}}$, and ${\mbox{X}}_{\mbox{3}}$, we usually have to assume that it has some more restricted form, for example:    
+
+$$\widehat{\mbox{y}}=\widehat{\beta}_{\mbox{0}}+\widehat{\beta}_{\mbox{1}}\cdot{\mbox{X}}_{\mbox{1}}+\widehat{\beta}_{\mbox{2}}\cdot{\mbox{X}}_{\mbox{2}}+\widehat{\beta}_{\mbox{3}}\cdot{\mbox{X}}_{\mbox{3}}$$
+where  
+  
+* ${\beta}_{\mbox{i}}$, i = 0,1,2,3 are unknown parameters.
+  
+* ${\beta}_{\mbox{0}}$  is called the intercept term.
+
+**Polynomials** are widely used in situations where the response is curvilinear, as even complex nonlinear relationships can be adequately modeled by polynomials over reasonably small ranges of the $x$’s. For example, the second-order polynomial regression in one variable can be represented as:
+
+
+$y={\beta}_0+{\beta}_1\cdot{\mbox{x}}+{\beta}_2\cdot{\mbox{x}}^2+{\epsilon}$ (Montgomery, Peck and Vining, 2012).  
+
+
+  
+A **generalized additive model** (GAM) is a model with a linear predictor involving a sum of smooth functions of covariates. In general the model has a structure such as: $f(x_1,x_2,\dots,x_n) = x_1^2 + x_2^2 + \dots + x_n^2$
+
+
+$$g({\mu}_{\mbox{i}}) = A_i{\theta} + f_1(x_{1i}) + f_2(x_{2i})+f_3(x_{3i},x_{4i})+\ldots$$
+where 
+
+* ${\mu}_{\mbox{i}}=E(Y_i)$ and $Y_i$ follows some exponential family distribution. 
+
+* $Y_i$ is a response variable, $X_i$ is a row of the model matrix for any strictly parametric model components, ${\theta}$ is the corresponding parameter vector, and the $f_j$ are smooth functions of the covariates, $X_k$. (Wood, 2006) 
+
+The **motivation** of using **Restricted Maximum likelihood** (REML) method is to fit a GAM model in order to avoid over-fitting for data with small sample size, which is only 38 in the athletic data set. To choose the best-fitting GAM model for separate events, we use REML method to choose the smooth parameter for the GAM model.
+
+The idea underlying REML estimation was put forward by M. S. Bartlett in 1937. The first description of the approach applied to estimating components of variance in unbalanced data was by Desmond Patterson and Robin Thompson of the University of Edinburgh in 1971. REML approach is a particular form of maximum likelihood estimation that does not base estimates on a maximum likelihood fit of all the information, but instead uses a likelihood function calculated from a transformed set of data (Dodge, Yadolah, 2006).
+
+#  Analysis of the Data {#sec:AOD}
+
+## Exploratory data analysis
+
+```{r ,echo = FALSE}
+all1500m %>%
+  group_by(sex) %>%
+  summarise(n=n(),Mean=round(mean(Time),digits=1), St.Dev=round(sd(Time),digits=1),
+            Min=min(Time), Q1 = quantile(Time,0.25), Median=median(Time),
+            Q3 = quantile(Time,0.75), Max=max(Time)) %>%
+  kable(caption = '\\label{tab:summaries} Summary statistics on
+  record Time by sex of 1500m events.') %>%
+  kable_styling(latex_options = "hold_position")
+
+all400m %>%
+  group_by(sex) %>%
+  summarise(n=n(),Mean=round(mean(Time),digits=1), St.Dev=round(sd(Time),digits=1),
+            Min=min(Time), Q1 = quantile(Time,0.25), Median=median(Time),
+            Q3 = quantile(Time,0.75), Max=max(Time)) %>%
+  kable(caption = '\\label{tab:summaries} Summary statistics on
+  record Time by sex of 400m events.') %>%
+  kable_styling(latex_options = "hold_position")
+
+all800m %>%
+  group_by(sex) %>%
+  summarise(n=n(),Mean=round(mean(Time),digits=1), St.Dev=round(sd(Time),digits=1),
+            Min=min(Time), Q1 = quantile(Time,0.25), Median=median(Time),
+            Q3 = quantile(Time,0.75), Max=max(Time)) %>%
+  kable(caption = '\\label{tab:summaries} Summary statistics on
+  record Time by sex of 800m events.') %>%
+  kable_styling(latex_options = "hold_position")
+```
+
+The above tables show that for each event separately, it can be seen that male are in average spend less time than female in all three 400m, 800m, 1500m events. The maximum and minimum of time for male events is both smaller then female events. In addition to this, it can seen that the standard deviation for male is smaller than female, which might indicates that female athletes has a faster progression rate than male athletes.
+
+```{r transform data,echo = FALSE}
+allela=transform(all,Date=1900+as.integer(Date-as.Date('1900-1-1'))/365)
+all1500m=transform(all1500m,Date=1900+as.integer(Date-as.Date('1900-1-1'))/365)
+all400m=transform(all400m,Date=1900+as.integer(Date-as.Date('1900-1-1'))/365)
+all800m=transform(all800m,Date=1900+as.integer(Date-as.Date('1900-1-1'))/365)
+Men1500m=transform(Men1500m,Date=1900+as.integer(Date-as.Date('1900-1-1'))/365)
+Men400m=transform(Men400m,Date=1900+as.integer(Date-as.Date('1900-1-1'))/365)
+Men800m=transform(Men800m,Date=1900+as.integer(Date-as.Date('1900-1-1'))/365)
+Women1500m=transform(Women1500m,Date=1900+as.integer(Date-as.Date('1900-1-1'))/365)
+Women400m=transform(Women400m,Date=1900+as.integer(Date-as.Date('1900-1-1'))/365)
+Women800m=transform(Women800m,Date=1900+as.integer(Date-as.Date('1900-1-1'))/365)
+
+male=rbind(Men1500m,Men400m,Men800m)
+female=rbind(Women1500m,Women400m,Women800m)
+
+allrm=subset(all,all$Altitude<2000)
+Men1500mrm=subset(Men1500m,Men1500m$Altitude<2000)
+Women1500mrm=subset(Women1500m,Women1500m$Altitude<2000)
+Men400mrm=subset(Men400m,Men400m$Altitude<2000)
+Women400mrm=subset(Women400m,Women400m$Altitude<2000)
+Men800mrm=subset(Men800m,Men800m$Altitude<2000)
+Women800mrm=subset(Women800m,Women800m$Altitude<2000)
+
+all=rbind(Men1500m,Women1500m,
+          Men400m,Women400m,
+          Men800m,Women800m)
+```
+
+```{r Time against date,echo = FALSE}
+ggplot(allela,mapping=aes(x=Date,y=Time,col=factor(class)))+
+  geom_point()+
+  facet_wrap(~class)+
+  labs(x="Date",y="Time",title="Time against date for events over middle distance")
+```
+
+
+From the plots, we could see that the variable `Time` decreases as `Date` increases. In addition to the overall decreasing trend, it seems that there is a non-linear relationship for between `Time` and `Date` for female events, which indicates that linear models might not be appropriate to fit the data. More complicated model might be required to fit the data with curvatures.
+
+```{r other,echo = FALSE}
+par(mfcol=c(1,2))
+
+
+
+
+plot(all$age,all$Time,lwd=1,pch=20,col=factor(all$class),main="Time against Age for 6 events")
+
+legend("topright",legend=c("M1500m","F1500m","M400m","F400m","M800m","F800m"),pch=20,col=1:6,cex=0.7)
+
+plot(all$Altitude,all$Time,lwd=1,pch=20,col=factor(all$class),main="Time against Altitude for 6 events")
+
+legend("topright",legend=c("M1500m","F1500m","M400m","F400m","M800m","F800m"),pch=20,col=1:6,cex=0.7)
+
+all=subset(all,all$Altitude<2000)
+```
+
+From the plot, we could see that for all six events, most competitions happens in city that has altitude less 500m. Data points that has altitude greater than 1500m might be considered as outliers and needs futher consideration while fitting the model. For all six events, we find that most athletics are among 20-35 years old, which are in their young age. In addition to this, variable 'Age' seems does not has a large effect on 'Time'. 
+
+```{r,echo = FALSE}
+all=rbind(Men1500m,Women1500m,
+          Men400m,Women400m,
+          Men800m,Women800m)
+all1500m=rbind(Men1500m,Women1500m)
+all400m=rbind(Men400m,Women400m)
+all800m=rbind(Men800m,Women800m)
+male=rbind(Men1500m,Men400m,Men800m)
+female=rbind(Women1500m,Women400m,Women800m)
+```
+
+
+```{r,echo = FALSE}
+allelapair=allela[,-c(1,3,4,5,6)]
+allelapair1=allelapair[,-c(1,2)]
+ggpairs(allelapair1)
+```
+
+The pairs plot shows that `Speed` and `Altitude` both have weak negative correlation with `age`, which are -0.147 and -0.061, respectively. `Speed` and `age` both have weak positive correlation with `Date`, which are 0.238, 0.099 separately. In addition to this, it is also worth noting that there is no strongly correlated pairs of variables.
+
+## Analyses and model checks
+
+### linear models
+
+
+```{r lm,echo = FALSE}
+lm1=lm(Time~Date,data=Men1500m)
+lm2=lm(Time~Date,data=Men400m)
+lm3=lm(Time~Date,data=Men800m)
+lm4=lm(Time~Date,data=Women1500m)
+lm5=lm(Time~Date,data=Women400m)
+lm6=lm(Time~Date,data=Women800m)
+
+par(mfcol=c(2,3))
+plot(Men1500m$Date,Men1500m$Time,xlab="Date",ylab="Time",main="Men1500m event")
+abline(lm1$coefficients[1],lm1$coefficients[2],col="red",lwd=2)
+
+plot(Men400m$Date,Men400m$Time,xlab="Date",ylab="Time",main="Men400m event")
+abline(lm2$coefficients[1],lm2$coefficients[2],col="red",lwd=2)
+
+plot(Men800m$Date,Men800m$Time,xlab="Date",ylab="Time",main="Men800m event")
+abline(lm3$coefficients[1],lm3$coefficients[2],col="red",lwd=2)
+
+plot(Women1500m$Date,Women1500m$Time,xlab="Date",ylab="Time",main="Women1500m event")
+abline(lm4$coefficients[1],lm4$coefficients[2],col="red",lwd=2)
+
+plot(Women400m$Date,Women400m$Time,xlab="Date",ylab="Time",main="Women400m event")
+abline(lm5$coefficients[1],lm5$coefficients[2],col="red",lwd=2)
+
+plot(Women800m$Date,Women800m$Time,xlab="Date",ylab="Time",main="Women800m event")
+abline(lm6$coefficients[1],lm6$coefficients[2],col="red",lwd=2)
+
+par(mfcol=c(1,1))
+
+```
+
+Firstly, we start by fitting linear models to investigate the relationship between variable Time and Date.
+
+From the plot, we can see that linear model fit the data well for Men1500m data, and Women800m data. However, it does not fit the data well for Women400m and Women1500m data. Since linear models cannot fit the data with curvature well, what about log-linear models?
+
+### log-linear models
+```{r llm,echo = FALSE}
+llm1=lm(log(Time)~Date,data=Men1500m)
+llm2=lm(log(Time)~Date,data=Men400m)
+llm3=lm(log(Time)~Date,data=Men800m)
+llm4=lm(log(Time)~Date,data=Women1500m)
+llm5=lm(log(Time)~Date,data=Women400m)
+llm6=lm(log(Time)~Date,data=Women800m)
+
+par(mfcol=c(2,3))
+plot(Men1500m$Date,log(Men1500m$Time),xlab="Date",ylab="log(Time)",main="Men1500m event")
+abline(llm1$coefficients[1],llm1$coefficients[2],col="red",lwd=2)
+
+plot(Men400m$Date,log(Men400m$Time),xlab="Date",ylab="log(Time)",main="Men400m event")
+abline(llm2$coefficients[1],llm2$coefficients[2],col="red",lwd=2)
+
+plot(Men800m$Date,log(Men800m$Time),xlab="Date",ylab="log(Time)",main="Men800m event")
+abline(llm3$coefficients[1],llm3$coefficients[2],col="red",lwd=2)
+
+plot(Women1500m$Date,log(Women1500m$Time),xlab="Date",ylab="log(Time)",main="Women1500m event")
+abline(llm4$coefficients[1],llm4$coefficients[2],col="red",lwd=2)
+
+plot(Women400m$Date,log(Women400m$Time),xlab="Date",ylab="log(Time)",main="Women400m event")
+abline(llm5$coefficients[1],llm5$coefficients[2],col="red",lwd=2)
+
+plot(Women800m$Date,log(Women800m$Time),xlab="Date",ylab="log(Time)",main="Women800m event")
+abline(llm6$coefficients[1],llm6$coefficients[2],col="red",lwd=2)
+
+par(mfcol=c(1,1))
+```
+
+From the plot we could see that the log transformation does not help a lot in terms for model fitting. It seems that log transformation works well on Men1500m, Men400m, but does not fit women1500m, Women400m well, because there still exist some curvature in the above data.
+
+### Polynomial models
+
+```{r pm,echo = FALSE}
+pm1=lm((Time)~Date+I(Date^2)+I(Date^3),data=Men1500m)
+pm2=lm((Time)~Date+I(Date^2)+I(Date^3),data=Men400m)
+pm3=lm((Time)~Date+I(Date^2)+I(Date^3),data=Men800m)
+pm4=lm((Time)~Date+I(Date^2)+I(Date^3),data=Women1500m)
+pm5=lm((Time)~Date+I(Date^2)+I(Date^3),data=Women400m)
+pm6=lm((Time)~Date+I(Date^2)+I(Date^3),data=Women800m)
+
+
+par(mfcol=c(2,3))
+plot(Men1500m$Date,Men1500m$Time,xlab="Date",ylab="Time",main="Men1500m event")
+y=pm1$coefficients[1]+pm1$coefficients[2]*Men1500m$Date+pm1$coefficients[3]*Men1500m$Date^2+
+  pm1$coefficients[4]*Men1500m$Date^3
+lines(Men1500m$Date,y,col="red",lwd=2)
+
+plot(Men400m$Date,Men400m$Time,xlab="Date",ylab="Time",main="Men400m event")
+y=pm2$coefficients[1]+pm2$coefficients[2]*Men400m$Date+pm2$coefficients[3]*Men400m$Date^2+
+  pm2$coefficients[4]*Men400m$Date^3
+lines(Men400m$Date,y,col="red",lwd=2)
+
+plot(Men800m$Date,Men800m$Time,xlab="Date",ylab="Time",main="Men800m event")
+y=pm3$coefficients[1]+pm3$coefficients[2]*Men800m$Date+pm3$coefficients[3]*Men800m$Date^2+
+  pm3$coefficients[4]*Men800m$Date^3
+lines(Men800m$Date,y,col="red",lwd=2)
+
+plot(Women1500m$Date,Women1500m$Time,xlab="Date",ylab="Time",main="Women1500m event")
+y=pm4$coefficients[1]+pm4$coefficients[2]*Women1500m$Date+pm4$coefficients[3]*Women1500m$Date^2+
+  pm4$coefficients[4]*Women1500m$Date^3
+lines(Women1500m$Date,y,col="red",lwd=2)
+
+plot(Women400m$Date,Women400m$Time,xlab="Date",ylab="Time",main="Women400m event")
+y=pm5$coefficients[1]+pm5$coefficients[2]*Women400m$Date+pm5$coefficients[3]*Women400m$Date^2
+lines(Women400m$Date,y,col="red",lwd=2)
+
+plot(Women800m$Date,Women800m$Time,xlab="Date",ylab="Time",main="Women800m event")
+y=pm6$coefficients[1]+pm6$coefficients[2]*Women800m$Date+pm6$coefficients[3]*Women800m$Date^2+
+  pm6$coefficients[4]*Women800m$Date^3
+lines(Women800m$Date,y,col="red",lwd=2)
+
+par(mfcol=c(1,1))
+```
+
+From the plot, we could see that a polynomial models seems to perform better than linear models. However, the models seem not to fit Men1500m event, Women400m event, Women1500m event well. The next step is to check for model assumption. 
+
+```{r check pm,echo = FALSE}
+par(mfcol=c(2,2))
+plot(pm5)
+par(mfcol=c(1,1))
+```
+
+Take Men 1500m dataset as an example, we find that residuals are not independent around the horizontal axis, which might indicates polynomial models are also not appropriate for the data. It is worth noting that other dataset shows similar problems on polynomial models.
+
+### Generlized additive models
+
+The **motivation** of using Restricted Maximum likelihood (REML) method is to fit a GAM model in order to avoid over-fitting for data with small sample size, which is only 38 in the athletic data set. To choose the best-fitting GAM model for separate events, we use REML method to choose the smooth parameter for the GAM model. 
+
+To compare models with different explanatory variables, we use AIC as selecting criteria.
+
+The best fitting GAM model we choose for Men1500m is the following, as GAM model Time~s(Date) contains the lowest AIC, and largest adjusted R square, comparing with the Time~s(Date)+s(age), Time~s(Date)+s(age)+s(Altitude). To investigate whether the data point that has $Altitude$ greater than 1000m are potential **outliers**, we compare the plot that contains potential outliers and without potential outliers.
+
+```{r plot,echo = FALSE}
+gam1=gam(Time~s(Date),data=Men1500m,method="REML")
+gam1rm=gam(Time~s(Date),data=Men1500mrm,method="REML")
+par(mfcol=c(1,2))
+plot(gam1,main="data without outliers")
+plot(gam1rm,main="data without outliers included")
+```
+
+From the plot, we can see that the outlier does not affect the model greatly, and the conclusion remains the same. As a result, we decide not to remove outlier for Men1500m data, which is also the similar situations for other events.
+
+As output of the best-fitting model shows, there is an overall negative trend between Time and Date. As we can see, the derivative(dropping speed) varies as `Date` increases. In particular for Men1500m data, the dropping speed is higher at Dates in between year 1960 to year 1980, which suggest that the progression speed of Men1500m speed is faster during 1960 to 1980 than the rest of time.
+
+```{r gam,echo = FALSE}
+
+summary(gam1)
+gam1$aic
+```
+
+The output of summary statistics shows that smoothing term for variable `Date` is significant, and the model has high adjusted R-square with 0.985, and high deviance explained, which is 98.7%. Then, we check model assumption for the fitted Men1500m data.
+
+```{r mcheck,echo = FALSE}
+par(mfcol=c(2,2))
+gam.check(gam1)
+par(mfcol=c(1,1))
+```
+
+```{r other models,echo = FALSE}
+gam32=gam(Time~s(Date)+s(age)+s(Altitude, bs = 'cr', k = 3),data=Men400m,method="REML")
+
+gam3=gam(Time~s(Date),data=Men800m,method="REML")
+
+gam24=gam(Time~s(Date)+s(age, bs = 'cr', k =3),data=Women1500m,method="REML")
+
+gam25=gam(Time~s(Date)+s(age),data=Women400m,method="REML")
+
+gam26=gam(Time~s(Date)+s(age),data=Women800m,method="REML")
+```
+
+Normal Q-Q plot Shows that the residuals are almost normally distributed. Resids vs linear pred. plot shows that are residues are almost evenly distributed along the horizontal axis. Histogram of residuals shows that residuals are almost normally distributed. However, it is slightly left-skewed which might due to small sample size (38).
+
+* Similarly, `r gam32$formula` is fitted for Men400m data; `r gam3$formula` is fitted for Men800m data after checking AIC, R square, residual plots.
+
+* `r gam24$formula` is fitted for Women1500m data, `r gam25$formula` is fitted for Women400m data, `r gam26$formula` is fitted for Women800m data. Outliers are included for Men1500m, Men400m, Men800m, Women1500m, Women400m, Women800m data after examined impact of including / excluding the outlier and that it made no difference.
+
+```{r GAM plots,echo = FALSE}
+par(mfcol=c(3,4))
+plot(gam1,main="Men1500m")
+plot(gam32,main="Men400m")
+plot(gam3,main="Men800m")
+plot(gam24,main="Women1500m")
+plot(gam25,main="Women400m")
+plot(gam26,main="Women800m")
+par(mfcol=c(1,1))
+```
+
+* As we could see, `Time` decreases as `Date` increases for all other 6 events. In addition to this, the derivative(dropping speed) varies as Date increases. Altitude and age seems to have little impact on the Time.
+
+## Prediction for Future Records
+
+```{r,echo = FALSE}
+pred1=gam(Date~s(Time),data=Men1500m,method="REML")
+```
+
+In order to predict the date of future world records, `r pred1$formula` is fitted to evaluate the possible future world record date for Men1500m event. If we define next world records improves by 1 second, which is observed by pattern of the previous data set. For example, for Men1500m event, now that the world record is 206 second, if we predict the $Time$ of next world records to be 205s, 204s, 203s, 202s, 201s, 200s, and we want to find $Date$ corresponding the above $Time$.
+
+```{r,echo = FALSE}
+plot(pred1,xlim=c(205,210),main="Prediction for Men1500m future world records",xlab="Time(seconds)")
+```
+
+```{r,echo = FALSE}
+Time.pred1=seq(201,205,length.out = 5)
+pred=predict.gam(pred1,data.frame(Time = Time.pred1))
+
+pred=list(c(205,204,203,202,201),c(2002.545,2005.660,2008.776,2011.891,2015.007))
+names(pred)=c("Possible future records(second)",c="Date of possible future records")
+print(pred)
+
+```
+
+As the result above shown, for Men1500m world records, the next world record, which is 205s would probably appears at year 2002. However, we noticed that the current world records for Men1500m is still 206s which is produced in 1974, which might indicates that 206s might be a threshold for male world records at 1500m. In addition to this, other explanatory variables, such as anthropometric parameters might be needed for a more accurate prediction.
+
+## Pattern of Progress for Male/Female 
+
+In order to compare the patterns of progress for Male/Female across events, we start by combining data for all events separately for male/female in order to compare the pattern under the same model formula. Note that to compare across different events, we use $Speed$ as response variable, rather than $Time$ to model the data since $Speed$ is more impartial while comparing event with different distances.
+
+```{r,echo = FALSE}
+gamfemale1=gam(Speed~s(Date,by=factor(class)),data=female,method="REML")
+gamfemale2=gam(Speed~s(Date,by=factor(class))+s(Altitude),data=female,method="REML")
+gamfemalefull=gam(Speed~s(Date,by=factor(class))+s(Altitude)+s(age),data=female,method="REML")
+
+gammale1=gam(Speed~s(Date,by=factor(class)),data=male,method="REML")
+gammale2=gam(Speed~s(Date,by=factor(class),k=20)+s(Altitude),data=male,method="REML")
+gammalefull=gam(Speed~s(Date,by=factor(class))+s(Altitude)+s(age),data=male,method="REML")
+```
+For female data, after fitting the model, there are three potential models that we could consider: 
+`r gamfemale1$formula`
+`r gamfemale2$formula`
+`r gamfemalefull$formula`
+
+* If we choose the model by lowest AIC, model `r gamfemalefull$formula` has lowest AIC `r gamfemalefull$aic`, and largest R square adjusted. 
+
+```{r,echo = FALSE}
+par(mfcol=c(2,3))
+plot(gamfemalefull,,ylim=c(-2,2),xlim=c(1960,2000))
+```
+
+According to the plot, we could explore that relationship between Speed of world records and other explanatory variables. For female, we can see that the increasing in `Speed` for 400m and 800m events is faster than increasing speed of `Speed` for 1500m events, during 1960 to 1980, when most world records occurs. In addition to this, Altitude and Age seems to have a little effect on `Speed` for all three events for this model. It is worth noting that outliers(data point with altitude greater than 2000m) remain in model since they do not change the interpretation, as previously mentioned.
+
+
+
+```{r,echo = FALSE}
+gam.check(gamfemalefull)
+```
+
+From the first normal Q-Q plot, we can see that residuals are almost normally distributed. The histogram shows that residuals are almost bell-curved and has mean zero. Thus we conclude that model assumptions are well-fitted. 
+
+From the output of female athletes models, we can see that smoothing term of Date for each events is almost significant (0.055,0.8,0.055), edf of s(Altitude) is 1, which indicates that variable Altitude is a linear fit in the model.
+
+```{r,echo = FALSE}
+par(mfcol=c(2,2))
+plot(gammale2,ylim=c(-2,2))
+```
+
+Similarly, we choose model `r gammale2$formula` for its lowest AIC `r gammale2$aic`, and largest R square adjusted for male data. 
+
+For male athletes, if we choose 1920 to 1980 as our observation period, which corresponds to 20 to 80 in our $Date$ axis. We could see that the curve of Men1500m data is for wiggy and steeper than Men400m and Men800m data, which indicates that increasing in `Speed` are faster for Men1500m than Men400m and Men800m, and the variance for Men1500m is also larger than Men400m and Men800m. As a result, we could conclude that Male has faster progression in events that has relatively longer distances(1500m).
+
+
+
+
+## Pattern of progress for Each Event
+
+In order to compare gender performance for each event, we start by combining data for both male and female athletes to compare the pattern of progress for each event using the same model. 
+
+```{r,echo = FALSE}
+gam1500m=gam(Time~s(Date,by=factor(sex)),data=all1500m,method="REML")
+
+gam400m=gam(Time~s(Date,by=factor(sex)),data=all400m,method="REML")
+
+gam800m=gam(Time~s(Date,by=factor(sex)),data=all800m,method="REML")
+
+```
+
+```{r,fig.dim = c(8, 6),echo = FALSE}
+par(mfcol=c(2,3))
+plot(gam1500m,main="1500m world records data",ylim=c(-30,50))
+plot(gam400m,main="400m world records data",ylim=c(-30,50))
+plot(gam800m,main="800m world records data",ylim=c(-30,50))
+
+```
+
+From the plot, we could see that for all three events, dropping speed for Time is faster for female than malefor data points from 1950 to 1980, when most world records was created. It could indicate that female hadfaster rate of progress than male in world records over middle distances.
+
+# Conclusions and discussion {#sec:Conc}
+
+## Summary of conclusions to all questions of interest
+
+* Male has faster progression in $Speed$ in events that has relatively longer distances(1500m) than events that has relatively short distances(400m,800m) .
+
+* Female has faster progression in $Speed$ in events that has has relatively short distances(400m,800m).
+
+* Female have faster rate of progress than male in world records over all middle distances events.
+
+
+
+## Discussion of any limitations of data and/or analysis
+
+* Prediction of world records has limitations, such as human body limits. Other explanatory variables, such as anthropometric parameters are needed for a more accurate prediction.
+
+* Wind speed is rarely recorded for distance above 200m, which affects athlete's running speed
+
+* Size of the the dataset is too small for GAM's cross-validation in order to avoid overfitting, and for more accurate analysis.
+
+* Other fitted method such as cross-validation method could used for comparison.
+
+\newpage
+# Reference
+
+Dodge, Yadolah (2006). *The Oxford Dictionary of Statistical Terms*. Oxford [Oxfordshire]: Oxford University Press. ISBN 0-19-920613-9.      
+<br />   
+<br />   
+<br /> 
+Faraway, J., 2009. *Linear models with R*. Boca Raton, Fla: Chapman & Hall/CRC.      
+<br />   
+<br />   
+<br /> 
+Montgomery, D., Peck, E. and Vining, G., 2012. *Introduction to linear regression analysis*.    
+<br />   
+<br />   
+<br /> 
+Patterson, H. D.; Thompson, R. (1971). *“Recovery of inter-block information when block sizes are unequal”*. Biometrika. 58 (3): 545. doi:10.1093/biomet/58.3.545
+<br />   
+<br />   
+<br /> 
+Wood, S., 2006. *Generalized additive models*. Boca Raton: Chapman & Hall/CRC.    
+
+
+
+
